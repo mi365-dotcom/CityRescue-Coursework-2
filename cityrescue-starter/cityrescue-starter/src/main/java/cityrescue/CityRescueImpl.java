@@ -13,7 +13,7 @@ import cityrescue.*;
 public class CityRescueImpl implements CityRescue {
     // TODO: add fields (map, arrays for stations/units/incidents, counters, tick, etc.)
 
-    // Fields that store the x(width) and y(length)
+    // Fields that store the x(width) and y(height)
     // dimensions of the city grid
     private int width;
     private int height;
@@ -24,14 +24,16 @@ public class CityRescueImpl implements CityRescue {
     // Encapsulates grid size, obstacles and legal moves
     private CityMap cityMap;
 
-    // moved CityMap to its own file
 
-    // 2D array so we can track obstacles
-    // and their positions
+    // 2D array so we can track obstacles and their positions
+    /*
+    TRUE = blocked cell
+    FALSE = free cell */
     private boolean[][] obstacles;
 
-    // Storage Limits as stated
+    // Maximum number of stations allowed in the system
     private static final int MAX_STATIONS = 20;
+
 
 
     @Override
@@ -41,9 +43,10 @@ public class CityRescueImpl implements CityRescue {
             // If not the message below is printed
             throw new InvalidGridException("The width: " + width + "and the height: " + height + ".You have inputted are invalid");
         }
-
+        // creates the CityMap object
         cityMap = new CityMap(width, height);
-        // resets all the stimulation states
+
+        // resets stimulation time
         tick = 0;
         // throw new UnsupportedOperationException("Not implemented yet");
 
@@ -52,7 +55,7 @@ public class CityRescueImpl implements CityRescue {
         // FALSE REPRESENTS AN EMPTY SPACE IN THE GRID
         obstacles = new boolean[width][height];
 
-        // Resets all the states
+        // Resets all counts 
         stationCount = 0;
         unitCount = 0;
         incidentCount = 0;
@@ -63,15 +66,16 @@ public class CityRescueImpl implements CityRescue {
         Incident.nextIncidentID = 1;
     }
     
-
+    // Returns grid dimensions
     @Override
     public int[] getGridSize() {
         // TODO: implement
-        // returns the valid stored width and height;
+        // returns the valid stored width and height as the grid dimensions;
         return new int[]{cityMap.width, cityMap.height};
         // throw new UnsupportedOperationException("Not implemented yet");
     }
 
+    
     @Override
     public void addObstacle(int x, int y) throws InvalidLocationException {
         // TODO: implement
@@ -89,8 +93,9 @@ public class CityRescueImpl implements CityRescue {
 
     @Override
     public void removeObstacle(int x, int y) throws InvalidLocationException {
-
+        // Checks if the obstacle coords are within the city grid
         if (!cityMap.isInBounds(x, y)) {
+            // if not the message
             throw new InvalidLocationException("Your position for the obstacle at (" + x + ", " + y + ") is invalid!!");
         }
         // throw new UnsupportedOperationException("Not implemented yet");
@@ -103,11 +108,12 @@ public class CityRescueImpl implements CityRescue {
     // Creates an array of stations to hold a max of 50 stations
     // for safe measure
     private Station[] stations = new Station[MAX_STATIONS];
+    // tracks how many stations currently exist
     private int stationCount = 0;
 
     // Moved Station class to its own file
 
-
+    //Adds a new station to the city
     @Override
     public int addStation(String name, int x, int y) throws InvalidNameException, InvalidLocationException, CapacityExceededException {
         // TODO: implement
@@ -145,7 +151,7 @@ public class CityRescueImpl implements CityRescue {
         // loop through all the stations to identify the one that matches the id
         for (int i = 0; i < stationCount; i++) {
             if (stations[i].id == stationId) {
-                // checks if the station jas any units
+                // checks if the station has any units
                 if (stations[i].unitCount > 0) {
                     throw new IllegalStateException("Station : " + stationId + " still has units and therefore cannot be removed!");
                 }
@@ -160,7 +166,7 @@ public class CityRescueImpl implements CityRescue {
         }
 
         // Deterministic removal 
-        // Removing the station from the array and shofting all remaining 
+        // Removing the station from the array and shifting all remaining 
         // stations down by one
         for (int i = idx; i < stationCount - 1; i++) {
             stations[i] = stations[i + 1];
@@ -232,6 +238,7 @@ public class CityRescueImpl implements CityRescue {
     private static final int MAX_UNITS = 50;
     // New array for the unit storage
     private Unit[] units = new Unit[MAX_UNITS];
+    // Count for units on the map
     private int unitCount = 0;
 
     private static abstract class Unit {
@@ -248,6 +255,7 @@ public class CityRescueImpl implements CityRescue {
         int homeStationId;
         // Assigned default incident ID
         int incidentId = -1;
+        // Static counter used to generate unique unit IDs
         private static int nextUnitID = 1;
         // remaining incident ticks
         int iTR = 0;
