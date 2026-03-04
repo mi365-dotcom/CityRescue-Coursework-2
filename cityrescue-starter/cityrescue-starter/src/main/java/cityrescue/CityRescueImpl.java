@@ -161,7 +161,7 @@ public class CityRescueImpl implements CityRescue {
 
         // Deterministic removal 
         // Removing the station from the array and shofting all remaining 
-        // stationd down by one
+        // stations down by one
         for (int i = idx; i < stationCount - 1; i++) {
             stations[i] = stations[i + 1];
         }
