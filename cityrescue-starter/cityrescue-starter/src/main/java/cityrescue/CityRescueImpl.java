@@ -10,6 +10,15 @@ import cityrescue.*;
  * Your task is to implement the full specification.
  * You may add additional classes in any package(s) you like.
  */
+
+// This class implements the CityRescue interface and provides the full
+// simulation logic for managing:
+ 
+ //The city grid (width, height, obstacles)
+ //Emergency stations
+ //Emergency response units
+ //Transfers and decommissioning
+ //Simulation tick tracking
 public class CityRescueImpl implements CityRescue {
     // TODO: add fields (map, arrays for stations/units/incidents, counters, tick, etc.)
 
