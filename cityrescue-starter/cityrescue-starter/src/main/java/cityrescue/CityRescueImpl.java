@@ -241,6 +241,22 @@ public class CityRescueImpl implements CityRescue {
     // Count for units on the map
     private int unitCount = 0;
 
+    /*WE USE AN ABSTRACT CLASS BECAUSE:
+    - all emergency units share common states and behaviours
+    == id, position, status, home station and incident assignment
+    
+    - However each unit behaves differently when tackling an incident
+    - As well as different ticks(How long it takes to deal with an incident)
+    
+    - As each method must be implemented differently by each unit type,
+     we declare an abstract method
+     
+     - This enforces polymorphism as we can store all Units within our unit array
+     - With each unit deciding its own run time
+     
+     - Simultaneously the abstract unit class ensures that only Ambulance,
+     FireEngine and PoliceCar are used.
+     */
     private static abstract class Unit {
         // Unit id
         int id;
